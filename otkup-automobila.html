@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AutoOtkup — Prodajte Vaš Automobil</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f2ec;
+      --cream: #ede9df;
+      --red: #d63a2a;
+      --red-dark: #b02e20;
+      --red-glow: rgba(214, 58, 42, 0.15);
+      --gray: #1e1e1e;
+      --gray-mid: #2e2e2e;
+      --text-muted: #888;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.12em;
+      color: var(--white);
+    }
+    .logo span { color: var(--red); }
+
+    nav ul { list-style: none; display: flex; gap: 2.5rem; }
+    nav ul a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    nav ul a:hover { color: var(--white); }
+
+    .nav-cta {
+      background: var(--red);
+      color: var(--white) !important;
+      padding: 0.55rem 1.4rem;
+      border-radius: 3px;
+      font-weight: 500 !important;
+      color: var(--white) !important;
+      transition: background 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--red-dark) !important; color: var(--white) !important; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 7rem 3rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 80% 50%, rgba(214,58,42,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-bg-text {
+      position: absolute;
+      bottom: -2rem;
+      right: -1rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(8rem, 18vw, 22rem);
+      color: rgba(255,255,255,0.025);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 2; }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 2.5rem; height: 1px;
+      background: var(--red);
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 7vw, 6.5rem);
+      line-height: 0.95;
+      letter-spacing: 0.03em;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em { color: var(--red); font-style: normal; }
+
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      max-width: 420px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-actions { display: flex; gap: 1rem; align-items: center; }
+
+    .btn-primary {
+      background: var(--red);
+      color: var(--white);
+      padding: 0.9rem 2.2rem;
+      border: none;
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--red-dark); transform: translateY(-1px); }
+
+    .btn-ghost {
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 0.9rem 2rem;
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 400;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+      display: inline-block;
+    }
+    .btn-ghost:hover { border-color: var(--white); }
+
+    /* Hero right: stats */
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-car-visual {
+      width: 100%;
+      max-width: 580px;
+      aspect-ratio: 16/9;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #1a1a1a 0%, #111 100%);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-car-visual::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 80%, rgba(214,58,42,0.12) 0%, transparent 65%);
+    }
+
+    .hero-stats {
+      display: flex; gap: 2.5rem;
+      width: 100%;
+      max-width: 580px;
+    }
+
+    .stat {
+      flex: 1;
+      background: var(--gray);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.2rem 1.5rem;
+    }
+    .stat-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      color: var(--red);
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0.3rem;
+    }
+
+    /* ─── TICKER ─── */
+    .ticker {
+      background: var(--red);
+      padding: 0.7rem 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-inner {
+      display: inline-flex; gap: 3rem;
+      animation: ticker 20s linear infinite;
+    }
+    .ticker-item {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.9);
+    }
+    .ticker-dot { color: rgba(255,255,255,0.4); }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ─── HOW IT WORKS ─── */
+    section { padding: 7rem 3rem; }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 2rem; height: 1px;
+      background: var(--red);
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: 0.04em;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 500px;
+      line-height: 1.7;
+      margin-bottom: 4rem;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .step {
+      background: var(--gray);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2rem 1.8rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .step:hover { border-color: rgba(214,58,42,0.4); transform: translateY(-4px); }
+
+    .step::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--red);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .step:hover::before { transform: scaleX(1); }
+
+    .step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4rem;
+      color: rgba(255,255,255,0.05);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .step-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+    .step h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.6rem;
+    }
+    .step p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+
+    /* ─── BENEFITS ─── */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .benefit {
+      background: var(--gray);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2rem;
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      transition: border-color 0.25s;
+    }
+    .benefit:hover { border-color: rgba(214,58,42,0.35); }
+
+    .benefit-icon {
+      width: 3rem; height: 3rem;
+      background: var(--red-glow);
+      border: 1px solid rgba(214,58,42,0.3);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .benefit h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .benefit p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; }
+
+    /* ─── FORM ─── */
+    .form-section {
+      background: var(--gray);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .form-left h2 { margin-bottom: 1rem; }
+    .form-left p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 2rem; }
+
+    .guarantee {
+      display: flex; gap: 1rem; align-items: center;
+      background: rgba(214,58,42,0.08);
+      border: 1px solid rgba(214,58,42,0.2);
+      border-radius: 4px;
+      padding: 1.2rem 1.4rem;
+    }
+    .guarantee-icon { font-size: 1.5rem; }
+    .guarantee-text { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+    .guarantee-text strong { color: var(--white); display: block; margin-bottom: 0.2rem; }
+
+    form { display: flex; flex-direction: column; gap: 1rem; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    label { display: flex; flex-direction: column; gap: 0.4rem; }
+    .label-text {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    input, select, textarea {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 3px;
+      padding: 0.85rem 1rem;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--red);
+    }
+    select option { background: var(--gray); }
+    textarea { resize: vertical; min-height: 100px; }
+
+    .form-submit {
+      margin-top: 0.5rem;
+    }
+    .form-submit .btn-primary {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    /* ─── TESTIMONIALS ─── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .testimonial {
+      background: var(--gray);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2rem;
+    }
+    .stars { color: var(--red); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 0.05em; }
+    .testimonial p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
+    .testimonial-author { display: flex; align-items: center; gap: 0.8rem; }
+    .author-avatar {
+      width: 2.4rem; height: 2.4rem;
+      border-radius: 50%;
+      background: var(--red);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.9rem;
+      color: var(--white);
+    }
+    .author-name { font-weight: 600; font-size: 0.9rem; }
+    .author-loc { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+    /* ─── BRANDS ─── */
+    .brands-section { padding: 4rem 3rem; border-top: 1px solid var(--border); }
+    .brands-label { text-align: center; font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 2.5rem; }
+    .brands-row {
+      display: flex; justify-content: center; align-items: center;
+      gap: 3.5rem; flex-wrap: wrap;
+    }
+    .brand-item {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.1em;
+      transition: color 0.2s;
+    }
+    .brand-item:hover { color: rgba(255,255,255,0.5); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--gray);
+      border-top: 1px solid var(--border);
+      padding: 3rem;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .footer-info { display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.1em; }
+    .footer-logo span { color: var(--red); }
+    .footer-contact { color: var(--text-muted); font-size: 0.85rem; }
+    .footer-contact a { color: var(--red); text-decoration: none; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { color: var(--text-muted); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-copy { color: rgba(255,255,255,0.2); font-size: 0.78rem; }
+
+    /* ─── SCROLL ANIMATIONS ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; padding-top: 8rem; }
+      .hero-right { align-items: flex-start; }
+      .hero-car-visual { max-width: 100%; }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      .form-wrapper { grid-template-columns: 1fr; gap: 3rem; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .benefits-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1.5rem; }
+      nav ul { display: none; }
+      section { padding: 5rem 1.5rem; }
+      .hero { padding: 7rem 1.5rem 3rem; }
+      .steps { grid-template-columns: 1fr; }
+      .hero-stats { flex-direction: column; gap: 1rem; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">Auto<span>Otkup</span></div>
+    <ul>
+      <li><a href="#kako-radi">Kako radi</a></li>
+      <li><a href="#prednosti">Prednosti</a></li>
+      <li><a href="#recenzije">Recenzije</a></li>
+      <li><a href="#kontakt" class="nav-cta">Prodaj auto</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Brz · Pouzdan · Bez stresa</div>
+      <h1>
+        Prodajte<br/>
+        Vaš Auto<br/>
+        <em>Za 24h</em>
+      </h1>
+      <p class="hero-desc">
+        Bez čekanja, bez komplikovanih procedura. Dajte nam podatke o vozilu, dobijate ponudu odmah — i novac na računu isti dan.
+      </p>
+      <div class="hero-actions">
+        <a href="#kontakt" class="btn-primary">Zatražite ponudu →</a>
+        <a href="#kako-radi" class="btn-ghost">Kako funkcioniše</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-car-visual">🚗</div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-number">2.400+</div>
+          <div class="stat-label">Otkupljenih vozila</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">24h</div>
+          <div class="stat-label">Isplata garantovana</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">98%</div>
+          <div class="stat-label">Zadovoljnih klijenata</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-bg-text">AUTO</div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span class="ticker-item">BESPLATNA PROCJENA</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">ISPLATA U 24 SATA</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">BEZ POSREDNIKA</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">SVA VOZILA PRIHVATAMO</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">BESPLATNA PROCJENA</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">ISPLATA U 24 SATA</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">BEZ POSREDNIKA</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">SVA VOZILA PRIHVATAMO</span>
+      <span class="ticker-dot">◆</span>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section id="kako-radi">
+    <div class="section-label">Proces</div>
+    <h2 class="section-title">Kako funkcioniše?</h2>
+    <p class="section-sub">Samo 4 koraka dijele vas od gotovine u džepu. Bez papirологije, bez glave.</p>
+
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-num">01</div>
+        <div class="step-icon">📋</div>
+        <h3>Popunite obrazac</h3>
+        <p>Unesite osnovne podatke o vozilu — marka, model, godište, kilometraža i stanje.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay:0.1s">
+        <div class="step-num">02</div>
+        <div class="step-icon">💬</div>
+        <h3>Dobijete ponudu</h3>
+        <p>Naš tim analizira vozilo i u roku od sat vremena šalje vam fer tržišnu ponudu.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay:0.2s">
+        <div class="step-num">03</div>
+        <div class="step-icon">🔍</div>
+        <h3>Pregled vozila</h3>
+        <p>Dolazimo kod vas ili donosite vozilo — brzi fizički pregled koji traje svega 30 min.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay:0.3s">
+        <div class="step-num">04</div>
+        <div class="step-icon">💰</div>
+        <h3>Isplata odmah</h3>
+        <p>Potpišemo ugovor i novac je na vašem računu istog dana. Gotovo!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section id="prednosti" style="background: var(--gray); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="section-label">Zašto mi?</div>
+    <h2 class="section-title">Prednosti otkupa kod nas</h2>
+    <p class="section-sub">Nismo oglasnik — mi direktno kupujemo vaš auto. To znači brže, jednostavnije, bolje za vas.</p>
+
+    <div class="benefits-grid">
+      <div class="benefit fade-up">
+        <div class="benefit-icon">⚡</div>
+        <div>
+          <h3>Brza isplata</h3>
+          <p>Novac na vašem računu u roku od 24 sata od dogovora. Bez odlaganja, bez čekanja.</p>
+        </div>
+      </div>
+      <div class="benefit fade-up">
+        <div class="benefit-icon">🛡️</div>
+        <div>
+          <h3>Sigurna transakcija</h3>
+          <p>Legalan ugovor o kupoprodaji, pravna zaštita za obje strane, bez skrivenih troškova.</p>
+        </div>
+      </div>
+      <div class="benefit fade-up">
+        <div class="benefit-icon">📍</div>
+        <div>
+          <h3>Dolazimo kod vas</h3>
+          <p>Niste u mogućnosti da donesete vozilo? Naš tim dolazi na vašu adresu — besplatno.</p>
+        </div>
+      </div>
+      <div class="benefit fade-up">
+        <div class="benefit-icon">🚘</div>
+        <div>
+          <h3>Prihvatamo sve marke</h3>
+          <p>Njemačka, japanska, korejska ili domaća vozila — sve prihvatamo bez obzira na stanje.</p>
+        </div>
+      </div>
+      <div class="benefit fade-up">
+        <div class="benefit-icon">📄</div>
+        <div>
+          <h3>Mi sređujemo papire</h3>
+          <p>Prijenos vlasništva, odjava vozila — sve administrativne obaveze snosimo mi umjesto vas.</p>
+        </div>
+      </div>
+      <div class="benefit fade-up">
+        <div class="benefit-icon">💎</div>
+        <div>
+          <h3>Fer cijena</h3>
+          <p>Naše procjene su transparentne i tržišno realne. Bez podcijenivanja, pošteno prema vama.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <section id="kontakt" class="form-section">
+    <div class="form-wrapper">
+      <div class="form-left fade-up">
+        <div class="section-label">Kontakt</div>
+        <h2 class="section-title">Zatražite<br/>besplatnu<br/>procjenu</h2>
+        <p>Popunite obrazac i naš tim će vas kontaktirati u roku od sat vremena s konkretnom ponudom za vaše vozilo.</p>
+        <div class="guarantee">
+          <div class="guarantee-icon">✅</div>
+          <div class="guarantee-text">
+            <strong>Bez obaveza</strong>
+            Dobijate ponudu — prihvatate je ili ne. Bez pritiska, bez skrivenih naknada.
+          </div>
+        </div>
+      </div>
+
+      <form class="fade-up" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <label>
+            <span class="label-text">Ime i prezime</span>
+            <input type="text" placeholder="Npr. Marko Marković" required />
+          </label>
+          <label>
+            <span class="label-text">Telefon</span>
+            <input type="tel" placeholder="+387 60 000 0000" required />
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            <span class="label-text">Marka vozila</span>
+            <select required>
+              <option value="">Odaberite marku</option>
+              <option>Volkswagen</option>
+              <option>BMW</option>
+              <option>Mercedes-Benz</option>
+              <option>Audi</option>
+              <option>Toyota</option>
+              <option>Ford</option>
+              <option>Opel</option>
+              <option>Peugeot</option>
+              <option>Renault</option>
+              <option>Škoda</option>
+              <option>Ostalo</option>
+            </select>
+          </label>
+          <label>
+            <span class="label-text">Model</span>
+            <input type="text" placeholder="Npr. Golf 7" required />
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            <span class="label-text">Godište</span>
+            <input type="number" placeholder="2018" min="1990" max="2025" required />
+          </label>
+          <label>
+            <span class="label-text">Kilometraža</span>
+            <input type="text" placeholder="Npr. 120.000 km" required />
+          </label>
+        </div>
+
+        <label>
+          <span class="label-text">Napomena (opciono)</span>
+          <textarea placeholder="Opišite stanje vozila, servisna historija, oprema..."></textarea>
+        </label>
+
+        <div class="form-submit">
+          <button type="submit" class="btn-primary">Pošalji zahtjev za procjenu →</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="recenzije">
+    <div class="section-label">Recenzije</div>
+    <h2 class="section-title">Šta kažu naši klijenti</h2>
+    <p class="section-sub" style="margin-bottom: 3rem;">Više od 2.400 zadovoljnih prodavaca — pročitajte njihova iskustva.</p>
+
+    <div class="testimonials-grid">
+      <div class="testimonial fade-up">
+        <div class="stars">★★★★★</div>
+        <p>"Prodao sam Golf 7 za manje od 24 sata. Ponuda je bila realna, momci su došli kod mene, ugovor potpisali na licu mjesta i novac dobio isti dan. Preporučujem svima!"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">M</div>
+          <div>
+            <div class="author-name">Mirza Halilović</div>
+            <div class="author-loc">Sarajevo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial fade-up" style="transition-delay:0.1s">
+        <div class="stars">★★★★★</div>
+        <p>"Bila sam skeptična jer nisam prodavala auto nikada ranije. Sve mi je pojašnjeno korak po korak. Papiri su sređeni bez moje brige. Izvrsna usluga, brzo i pouzdano."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">A</div>
+          <div>
+            <div class="author-name">Ana Petković</div>
+            <div class="author-loc">Banja Luka</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial fade-up" style="transition-delay:0.2s">
+        <div class="stars">★★★★★</div>
+        <p>"Imao sam stariji BMW s nekim kvarom. Na oglasnicima mi niko nije htio dati normalnu cijenu. Ovdje su odmah prihvatili, dali fer procjenu i isplatili bez problema."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">D</div>
+          <div>
+            <div class="author-name">Dragan Simić</div>
+            <div class="author-loc">Tuzla</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRANDS -->
+  <div class="brands-section">
+    <p class="brands-label">Otkupljujemo sve popularne marke</p>
+    <div class="brands-row">
+      <span class="brand-item">VOLKSWAGEN</span>
+      <span class="brand-item">BMW</span>
+      <span class="brand-item">MERCEDES</span>
+      <span class="brand-item">AUDI</span>
+      <span class="brand-item">TOYOTA</span>
+      <span class="brand-item">FORD</span>
+      <span class="brand-item">OPEL</span>
+      <span class="brand-item">ŠKODA</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-info">
+        <div class="footer-logo">Auto<span>Otkup</span></div>
+        <div class="footer-contact">
+          📞 <a href="tel:+38761000000">+387 61 000 000</a> &nbsp;|&nbsp;
+          ✉️ <a href="mailto:info@autootkup.ba">info@autootkup.ba</a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="#">Uvjeti korištenja</a>
+        <a href="#">Politika privatnosti</a>
+        <a href="#kako-radi">Kako radi</a>
+        <a href="#kontakt">Kontakt</a>
+      </div>
+      <div class="footer-copy">© 2025 AutoOtkup. Sva prava zadržana.</div>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Form submit handler
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.textContent = '✅ Zahtjev poslan! Kontaktiramo vas uskoro.';
+      btn.style.background = '#2a7d4f';
+      btn.disabled = true;
+    }
+  </script>
+</body>
+</html>
